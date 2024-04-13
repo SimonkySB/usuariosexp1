@@ -12,9 +12,12 @@ import com.simonky.usuarios.model.Rol;
 import com.simonky.usuarios.model.Usuario;
 import com.simonky.usuarios.service.UsuarioService;
 
+import jakarta.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @RequestMapping(value = "/usuarios")
 @RestController
+@Validated
 public class UsuarioController {
 
     
@@ -53,7 +57,7 @@ public class UsuarioController {
 
 
     @PostMapping
-    public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> createUsuario(@Valid @RequestBody Usuario usuario) {
         return ResponseEntity.ok(this.usuarioService.createUsuario(usuario));
     }
 
@@ -65,23 +69,23 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> putUsuario(@PathVariable("id") Long id, @RequestBody Usuario usuario) {
+    public ResponseEntity<Usuario> putUsuario(@PathVariable("id") Long id, @Valid @RequestBody Usuario usuario) {
         return ResponseEntity.ok(this.usuarioService.updateUsuario(id, usuario));
     }
 
     @PostMapping("/{id}/direcciones")
-    public ResponseEntity<Usuario> createDireccionUsuario(@PathVariable("id") Long id, @RequestBody Direccion direccion) {
+    public ResponseEntity<Usuario> createDireccionUsuario(@PathVariable("id") Long id, @Valid @RequestBody Direccion direccion) {
         return ResponseEntity.ok(this.usuarioService.createDireccionUsuario(id, direccion));
     }
 
     @DeleteMapping("/{id}/direcciones/{dirId}")
-    public ResponseEntity<Object> deleteDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId) {
+    public ResponseEntity<Void> deleteDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId) {
         this.usuarioService.deleteDireccionUsuario(id, dirId);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}/direcciones/{dirId}")
-    public ResponseEntity<Usuario> putDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId, @RequestBody Direccion direccion) {
+    public ResponseEntity<Usuario> putDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId, @Valid @RequestBody Direccion direccion) {
         return ResponseEntity.ok(this.usuarioService.updateDireccionUsuario(id, dirId, direccion));
     }
    

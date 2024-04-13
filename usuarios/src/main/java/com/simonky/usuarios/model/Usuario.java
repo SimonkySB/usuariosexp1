@@ -14,6 +14,11 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Pattern.Flag;
 
 
 @Entity
@@ -26,12 +31,20 @@ public class Usuario {
     private Long id;
     
     @Column(name = "nombre")
+    @NotEmpty(message = "El pais es requerido.")
+    @NotBlank(message = "El pais es requerido.")
     private String nombre;
 
     @Column(name = "email")
+    @NotEmpty(message = "El email es requerido.")
+    @NotBlank(message = "El email es requerido.")
+    @Email(message = "El email es inválido.", flags = { Flag.CASE_INSENSITIVE })
     private String email;
 
     @Column(name = "password")
+    @NotEmpty(message = "La contraseña es requerida.")
+    @NotBlank(message = "La contraseña es requerida.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$", message = "La contraseña debe contener como mínimo 8 caracteres, una letra y un numero y un caracter especial")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

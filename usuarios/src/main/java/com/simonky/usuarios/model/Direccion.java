@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "direccion")
@@ -21,6 +23,8 @@ public class Direccion {
     private String calle;
 
     @Column(name = "pais")
+    @NotEmpty(message = "El pais es requerido.")
+    @NotBlank(message = "El pais es requerido.")
     private String pais;
 
     @Column(name = "ciudad")
