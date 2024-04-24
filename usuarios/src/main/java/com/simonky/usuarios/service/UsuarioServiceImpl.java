@@ -15,6 +15,7 @@ import com.simonky.usuarios.exceptions.UsuarioNotFoundException;
 import com.simonky.usuarios.model.Direccion;
 import com.simonky.usuarios.model.Rol;
 import com.simonky.usuarios.model.Usuario;
+import com.simonky.usuarios.repository.DireccionRepository;
 import com.simonky.usuarios.repository.RolRepository;
 import com.simonky.usuarios.repository.UsuarioRepository;
 
@@ -28,6 +29,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Autowired
     private RolRepository rolRepository;
+
+    @Autowired
+    private DireccionRepository direccionRepository;
 
     @Override
     public List<Usuario> getUsuarios() {
@@ -84,67 +88,35 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
 
-    @Override
-    public void Iniciar(){
-        List<Usuario> usuarios = new ArrayList<>();
-        
-        for(int i = 0; i <= 5; i++) {
-            Usuario user = new Usuario();
-            user.setNombre("Usuario " + (i+1));
-            user.setEmail("user" + (i+1) + "@email.com");
-            user.setPassword("passwordSuperSergura#" + (i+1));
-            usuarios.add(user);
-        }
-        
-        this.usuarioRepository.saveAll(usuarios);
-
-        var rol1 = new Rol();
-        rol1.setNombre("ADMIN");
-
-        var rol2 = new Rol();
-        rol2.setNombre("CLIENTE");
-        
-        this.rolRepository.save(rol1);
-        this.rolRepository.save(rol2);
-    }
 
 
     @Override
-    public Usuario createDireccionUsuario(Long id, Direccion direccion) {
+    public Direccion createDireccionUsuario(Long id, Direccion direccion) {
         Usuario dbUser = this.usuarioRepository.findById(id)
             .orElseThrow(() -> new UsuarioNotFoundException(id));
 
-        
         direccion.setId(null);
-        dbUser.getDirecciones().add(direccion);
+        direccion.setUsuarioId(dbUser.getId());
         
-        return this.usuarioRepository.save(dbUser);
+        return direccionRepository.save(direccion);
     }
 
     @Override
     public void deleteDireccionUsuario(Long id, Long dirId) {
-        Usuario dbUser = this.usuarioRepository.findById(id)
-            .orElseThrow(() -> new UsuarioNotFoundException(id));
-
-        dbUser.getDirecciones()
+        
+        Direccion direccion = direccionRepository.findByUsuarioId(id)
             .stream()
             .filter(d -> d.getId() == dirId)
             .findFirst()
             .orElseThrow(() -> new DireccionNotFoundException(dirId));
 
-        
-        dbUser.getDirecciones().removeIf(d -> d.getId() == dirId);
-        this.usuarioRepository.save(dbUser);
+        direccionRepository.delete(direccion);
     }
 
     @Override
-    public Usuario updateDireccionUsuario(Long id, Long dirId, Direccion nuevaDireccion) {
-        Usuario dbUser = this.usuarioRepository.findById(id)
-            .orElseThrow(() -> new UsuarioNotFoundException(id));
-
-
-        
-        Direccion direccion = dbUser.getDirecciones().stream()
+    public Direccion updateDireccionUsuario(Long id, Long dirId, Direccion nuevaDireccion) {
+ 
+        Direccion direccion = direccionRepository.findByUsuarioId(id).stream()
             .filter(d -> d.getId() == dirId)
             .findFirst()
             .orElseThrow(() -> new DireccionNotFoundException(dirId));
@@ -155,12 +127,25 @@ public class UsuarioServiceImpl implements UsuarioService {
         direccion.setPais(nuevaDireccion.getPais());
         direccion.setZipcode(nuevaDireccion.getZipcode());
 
-        return this.usuarioRepository.save(dbUser);
-
+        return this.direccionRepository.save(direccion);
     }
 
     @Override
-    public Usuario cambiarRoles(Long id, List<Rol> roles) {
+    public List<Direccion> getDireccionesUsuario(Long usuarioId) {
+        return direccionRepository.findByUsuarioId(usuarioId);
+    }
+
+    @Override
+    public Direccion getDireccionUsuarioById(Long usuarioId, Long dirId) {
+        return direccionRepository.findByUsuarioId(usuarioId).stream()
+        .filter(d -> d.getId() == dirId)
+        .findFirst()
+        .orElseThrow(() -> new DireccionNotFoundException(dirId));
+    }
+
+
+    @Override
+    public List<Rol> cambiarRoles(Long id, List<Rol> roles) {
         Usuario dbUser = this.usuarioRepository.findById(id)
         .orElseThrow(() -> new UsuarioNotFoundException(id));
 
@@ -174,9 +159,15 @@ public class UsuarioServiceImpl implements UsuarioService {
             .collect(Collectors.toList());
 
         dbUser.setRoles(rolesUsuario);
-        return this.usuarioRepository.save(dbUser);
+        
+        return this.usuarioRepository.save(dbUser).getRoles();
     }
 
-    
-    
+    @Override
+    public List<Rol> getRolesUsuario(Long id) {
+        Usuario dbUser = this.usuarioRepository.findById(id)
+        .orElseThrow(() -> new UsuarioNotFoundException(id));
+        return dbUser.getRoles();
+    }
+
 }

@@ -3,6 +3,8 @@ package com.simonky.usuarios.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,7 +25,7 @@ import jakarta.validation.constraints.Pattern.Flag;
 
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario extends RepresentationModel<Usuario>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -33,9 +33,12 @@ public class Direccion {
     @Column(name = "zipcode")
     private String zipcode;
 
+    @Column(name = "usuario_id")
+    private Long usuarioId;
+
 
     
-
+    
 
     public Long getId() {
         return id;
@@ -84,6 +87,16 @@ public class Direccion {
 
     public void setZipcode(String zipcode) {
         this.zipcode = zipcode;
+    }
+
+
+    public Long getUsuarioId() {
+        return usuarioId;
+    }
+
+
+    public void setUsuarioId(Long usuarioId) {
+        this.usuarioId = usuarioId;
     }
     
 

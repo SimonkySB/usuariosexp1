@@ -1,0 +1,26 @@
+version: '3'
+services:
+  microservicio:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - spring.datasource.url=jdbc:oracle:thin:@oracle-xe:1521:XE
+      - spring.datasource.username=SYSTEM
+      - spring.datasource.password=oracle
+    networks:
+      - oracle
+    restart: always
+  oracle-xe:
+    image: gvenzl/oracle-xe:21
+    ports:
+      - "1521:1521"
+    networks:
+      - oracle
+    environment:
+      - "ORACLE_PASSWORD=oracle"
+networks:
+  oracle:
+    name: oracle

@@ -17,9 +17,12 @@ public interface UsuarioService {
     Usuario createUsuario(Usuario usuario);
     Usuario updateUsuario(Long Id, Usuario usuario);
 
-    void Iniciar();
-    Usuario createDireccionUsuario(Long id, Direccion direccion);
+    List<Direccion> getDireccionesUsuario(Long usuarioId);
+    Direccion getDireccionUsuarioById(Long usuarioId, Long dirId);
+    Direccion createDireccionUsuario(Long id, Direccion direccion);
     void deleteDireccionUsuario(Long id, Long dirId);
-    Usuario updateDireccionUsuario(Long id, Long dirId, Direccion direccion);
-    Usuario cambiarRoles(Long id, List<Rol> roles);
+    Direccion updateDireccionUsuario(Long id, Long dirId, Direccion direccion);
+
+    List<Rol> getRolesUsuario(Long id);
+    List<Rol> cambiarRoles(Long id, List<Rol> roles);
 }
