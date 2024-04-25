@@ -69,7 +69,7 @@ public class UsuarioController {
         Usuario usuarioCreado = this.usuarioService.createUsuario(usuario);
         EntityModel<Usuario> res = EntityModel.of(usuarioCreado,
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuarioCreado.getId())).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("peliculas")
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
         );
 
         return ResponseEntity.ok(res);
@@ -87,7 +87,7 @@ public class UsuarioController {
         Usuario usuarioActualizado = this.usuarioService.updateUsuario(id, usuario);
         EntityModel<Usuario> res = EntityModel.of(usuarioActualizado,
             WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuarioActualizado.getId())).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("peliculas")
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
         );
 
         return ResponseEntity.ok(res);

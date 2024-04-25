@@ -1,0 +1,4 @@
+com\simonky\usuarios\service\UsuarioServiceTest.class
+com\simonky\usuarios\repository\UsuarioRepositoryTest.class
+com\simonky\usuarios\UsuariosApplicationTests.class
+com\simonky\usuarios\controller\UsuarioControllerTest.class

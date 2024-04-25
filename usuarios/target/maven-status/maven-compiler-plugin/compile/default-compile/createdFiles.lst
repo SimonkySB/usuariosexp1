@@ -1,0 +1,16 @@
+com\simonky\usuarios\model\Rol.class
+com\simonky\usuarios\model\Direccion.class
+com\simonky\usuarios\exceptions\ExceptionTranslator$InvalidatedParams$InvalidatedParamsBuilder.class
+com\simonky\usuarios\exceptions\DireccionNotFoundException.class
+com\simonky\usuarios\service\UsuarioServiceImpl.class
+com\simonky\usuarios\exceptions\ExceptionTranslator.class
+com\simonky\usuarios\UsuariosApplication.class
+com\simonky\usuarios\controller\UsuarioController.class
+com\simonky\usuarios\repository\DireccionRepository.class
+com\simonky\usuarios\repository\RolRepository.class
+com\simonky\usuarios\exceptions\UsuarioNotFoundException.class
+com\simonky\usuarios\exceptions\ExceptionTranslator$InvalidatedParams.class
+com\simonky\usuarios\model\Usuario.class
+com\simonky\usuarios\repository\UsuarioRepository.class
+com\simonky\usuarios\service\UsuarioService.class
+com\simonky\usuarios\exceptions\EmailExistsException.class
