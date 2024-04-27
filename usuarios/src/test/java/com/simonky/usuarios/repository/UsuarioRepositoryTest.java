@@ -23,7 +23,7 @@ public class UsuarioRepositoryTest {
     private UsuarioRepository usuarioRepository;
 
     @Test
-    public void guardarPelicula(){
+    public void guardarUsaurio(){
         Usuario usuario = new Usuario();
        
         usuario.setEmail("email@gmail.com");
@@ -41,7 +41,7 @@ public class UsuarioRepositoryTest {
     }
 
     @Test
-    public void eliminarPelicula() {
+    public void eliminarUsuario() {
         Usuario usuario = new Usuario();
         usuario.setEmail("email@gmail.com");
         usuario.setPassword("password123#");
