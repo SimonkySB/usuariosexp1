@@ -41,25 +41,14 @@ public class UsuarioController {
     @GetMapping
     public ResponseEntity<CollectionModel<EntityModel<Usuario>>> getUsuarios() {
         var usuarios = this.usuarioService.getUsuarios();
-
-        List<EntityModel<Usuario>> dataRes = usuarios.stream()
-            .map(p -> EntityModel.of(p,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(p.getId())).withSelfRel()
-            )).collect(Collectors.toList());
-        
-        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios());
-        CollectionModel<EntityModel<Usuario>> recursos = CollectionModel.of(dataRes, linkTo.withRel("usuarios"));
-
-        return ResponseEntity.ok(recursos); 
+        return ResponseEntity.ok(usuarioCollectionHateoas(usuarios)); 
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<Usuario>> getUsuarioById(@PathVariable("id") Long id) {
-        EntityModel<Usuario> res = EntityModel.of(this.usuarioService.getUsuarioById(id),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(id)).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
-        );
+        var usuario = this.usuarioService.getUsuarioById(id);
+        var res = this.usuarioHateoas(usuario);
         return ResponseEntity.ok(res);
     }
 
@@ -67,11 +56,7 @@ public class UsuarioController {
     @PostMapping
     public ResponseEntity<EntityModel<Usuario>> createUsuario(@Valid @RequestBody Usuario usuario) {
         Usuario usuarioCreado = this.usuarioService.createUsuario(usuario);
-        EntityModel<Usuario> res = EntityModel.of(usuarioCreado,
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuarioCreado.getId())).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
-        );
-
+        var res = this.usuarioHateoas(usuarioCreado);
         return ResponseEntity.ok(res);
     }
 
@@ -85,29 +70,31 @@ public class UsuarioController {
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<Usuario>> putUsuario(@PathVariable("id") Long id, @Valid @RequestBody Usuario usuario) {
         Usuario usuarioActualizado = this.usuarioService.updateUsuario(id, usuario);
-        EntityModel<Usuario> res = EntityModel.of(usuarioActualizado,
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(usuarioActualizado.getId())).withSelfRel(),
-            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
-        );
-
+        var res = this.usuarioHateoas(usuarioActualizado);
         return ResponseEntity.ok(res);
     }
 
 
     @GetMapping("/{id}/direcciones")
-    public ResponseEntity<List<Direccion>> getDireccionUsuario(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(this.usuarioService.getDireccionesUsuario(id));
+    public ResponseEntity<CollectionModel<EntityModel<Direccion>>> getDireccionUsuario(@PathVariable("id") Long id) {
+        var direcciones = usuarioService.getDireccionesUsuario(id);
+        var res = direccionCollectionHateoas(id, direcciones);
+        return ResponseEntity.ok(res);
     }
 
 
     @PostMapping("/{id}/direcciones")
-    public ResponseEntity<Direccion> createDireccionUsuario(@PathVariable("id") Long id, @Valid @RequestBody Direccion direccion) {
-        return ResponseEntity.ok(this.usuarioService.createDireccionUsuario(id, direccion));
+    public ResponseEntity<EntityModel<Direccion>> createDireccionUsuario(@PathVariable("id") Long id, @Valid @RequestBody Direccion direccion) {
+        var direccionCreada = usuarioService.createDireccionUsuario(id, direccion);
+        var res = direccionHateoas(id, direccionCreada);
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{id}/direcciones/{dirId}")
-    public ResponseEntity<Direccion> getDireccionUsuarioById(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId) {
-        return ResponseEntity.ok(this.usuarioService.getDireccionUsuarioById(id, dirId));
+    public ResponseEntity<EntityModel<Direccion>> getDireccionUsuarioById(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId) {
+        var direccion = this.usuarioService.getDireccionUsuarioById(id, dirId);
+        var res = direccionHateoas(id, direccion);
+        return ResponseEntity.ok(res);
     }
 
     @DeleteMapping("/{id}/direcciones/{dirId}")
@@ -117,8 +104,10 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}/direcciones/{dirId}")
-    public ResponseEntity<Direccion> putDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId, @Valid @RequestBody Direccion direccion) {
-        return ResponseEntity.ok(this.usuarioService.updateDireccionUsuario(id, dirId, direccion));
+    public ResponseEntity<EntityModel<Direccion>> putDireccionUsuario(@PathVariable("id") Long id, @PathVariable("dirId") Long dirId, @Valid @RequestBody Direccion direccion) {
+        var direccionActualizada = this.usuarioService.updateDireccionUsuario(id, dirId, direccion);
+        var res = direccionHateoas(id, direccionActualizada);
+        return ResponseEntity.ok(res);
     }
    
 
@@ -134,5 +123,43 @@ public class UsuarioController {
     }
 
     
+
+
+    private EntityModel<Usuario> usuarioHateoas(Usuario entity){
+        return EntityModel.of(entity,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(entity.getId())).withSelfRel(),
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios()).withRel("usuarios")
+        );
+    }
+
+    private CollectionModel<EntityModel<Usuario>> usuarioCollectionHateoas(List<Usuario> pacientes){
+        List<EntityModel<Usuario>> dataRes = pacientes.stream()
+            .map(p -> EntityModel.of(p,
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarioById(p.getId())).withSelfRel()
+            )).collect(Collectors.toList());
+        
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getUsuarios());
+        CollectionModel<EntityModel<Usuario>> recursos = CollectionModel.of(dataRes, linkTo.withRel("usuarios"));
+        return recursos;
+    }
+
+
+    private EntityModel<Direccion> direccionHateoas(Long usuarioId, Direccion entity){
+        return EntityModel.of(entity,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getDireccionUsuarioById(usuarioId, entity.getId())).withSelfRel(),
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getDireccionUsuario(usuarioId)).withRel("direcciones")
+        );
+    }
+
+    private CollectionModel<EntityModel<Direccion>> direccionCollectionHateoas(Long usuarioId, List<Direccion> entities) {
+        List<EntityModel<Direccion>> dataRes = entities.stream()
+        .map(p -> EntityModel.of(p,
+            WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getDireccionUsuarioById(usuarioId, p.getId())).withSelfRel()
+        )).collect(Collectors.toList());
+    
+        WebMvcLinkBuilder linkTo = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(this.getClass()).getDireccionUsuario(usuarioId));
+        CollectionModel<EntityModel<Direccion>> recursos = CollectionModel.of(dataRes, linkTo.withRel("direcciones"));
+        return recursos;
+    }
 
 }

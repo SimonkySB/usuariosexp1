@@ -1,5 +1,7 @@
 package com.simonky.usuarios.model;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +13,7 @@ import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "direccion")
-public class Direccion {
+public class Direccion extends RepresentationModel<Direccion>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
